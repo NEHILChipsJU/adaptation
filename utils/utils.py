@@ -250,7 +250,8 @@ def visualize_PCA_3D(X,label):
     #Obtainning the PCA components
     pca = PCA(n_components=3)  # number of axis
     X_pca = pca.fit_transform(X_centered)
-    
+    #storing the PCA1
+    PCA1=X_pca[0]
     #Plotting the PCA
     fig = plt.figure(figsize=(12, 8))  
     ax = fig.add_subplot(111, projection='3d')
@@ -261,10 +262,46 @@ def visualize_PCA_3D(X,label):
     ax.set_title(f"PCA 3D, {label}")
     plt.grid(True)
     plt.legend()
-    plt.show()        
+    plt.show() 
+    
+    return PCA1
+
+     
         
 
-
+def visualize_multiple_PCA_3D(X,label):
+    """
+    Visualize the PCA of any matrix, and project other the conceptor in the PCA space
+    Args:
+    - X: (list): Input matrix list
+    - label (list): text for the plot title
+    
+    Returns:
+    - plot
+    """
+    
+    
+    #Plotting the PCA
+    fig = plt.figure(figsize=(12, 8))  
+    ax = fig.add_subplot(111, projection='3d')
+    for i in range(len(X)):
+        # centering the X
+        X_centered = X[i] - np.mean(X[i], axis=0)
+        
+        #Obtainning the PCA components
+        pca = PCA(n_components=3)  # number of axis
+        X_pca = pca.fit_transform(X_centered)
+        ax.plot3D(X_pca[:, 0], X_pca[:, 1], X_pca[:, 2], alpha=0.5, label=fr'{label[i]}')
+        
+    ax.set_xlabel("PC1")
+    ax.set_ylabel("PC2")
+    ax.set_zlabel("PC3")
+    ax.set_title(f"PCA 3D")
+    plt.grid(True)
+    plt.legend()
+    plt.show()      
+    
+    
 
 
 

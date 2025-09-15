@@ -3,7 +3,8 @@ from scipy.sparse import random
 import matplotlib.pyplot as plt
 from sklearn.linear_model import Ridge
 
-
+# fail=np.array([10,250], dtype=int)
+n=3
 
 #container that randomly initializes W and Win
 def rnn_params(
@@ -127,7 +128,7 @@ def forward_rnn(params, ut,x_init=None, autonomous=False,conceptor=None): #auton
 
 
 #paper first equation
-def forward_rnn_deg(params, ut,x_init=None, autonomous=False,conceptor=None): #autonomous mode False by default
+def forward_rnn_deg(params, ut,x_init=None, autonomous=False,conceptor=None,deg=0,seed=42): #autonomous mode False by default
     """
     Forward pass of a recurrent neural network (RNN) .
 
@@ -137,7 +138,8 @@ def forward_rnn_deg(params, ut,x_init=None, autonomous=False,conceptor=None): #a
     - x_init (ndarray, optional): initial state of the RNN. Defaults to None.
     - autonomous (boolean): True or False if we want to use this mode or not
     - conceptor (array): The conceptor we want to use or None
-    
+    - deg (float): % of neuron degradation
+    - seed: seed for the random degradation
 
     Returns:
     - X (matriz): hidden satate for all the time series
@@ -152,6 +154,8 @@ def forward_rnn_deg(params, ut,x_init=None, autonomous=False,conceptor=None): #a
     x = np.ravel(x)    
     T=len(ut)
     N=params['w'].shape[0]
+    #generating the index fot the fail nodes
+    _,fail=degradation(x,deg,seed)
     # Creating the container for the state matrix
     X = np.zeros((T, N))
     if conceptor is None: # si es el primer paso, antes del entrenamiento
@@ -174,8 +178,8 @@ def forward_rnn_deg(params, ut,x_init=None, autonomous=False,conceptor=None): #a
         x = conceptor @ ((1 - params["a_dt"]) * x \
              + params["a_dt"] * np.tanh(dentro))
         #introducing the degradation manually
-        if t_idx> int(T/2):
-            x[10]=0
+        if t_idx> int(T/n):
+            x[fail]=0
         # Storing the hidden state
         X[t_idx] = x
         
@@ -377,7 +381,7 @@ def forward_rnn_CL(nu,a,beta,params, ut,C_init,C_target,C1,C2,x_init=None,autono
     return X,C_adapt
 
 
-def forward_rnn_CL_deg(nu,a,beta,params, ut,C_init,C_target,C1,C2,x_init=None,autonomous=False): #autonomous mode False by default
+def forward_rnn_CL_deg(nu,a,beta,params, ut,C_init,C_target,C1,C2,x_init=None,autonomous=False,deg=0,seed=42): #autonomous mode False by default
     """
     Forward pass of a recurrent neural network (RNN) .With Conceptor control loop
 
@@ -392,7 +396,8 @@ def forward_rnn_CL_deg(nu,a,beta,params, ut,C_init,C_target,C1,C2,x_init=None,au
     - C_target : Traget conceptor for the CCL logic
     - C1, C2: sine(T1), sine(T2) input conceptor. For the lambda scan
     - Autonomous: True or False if the autonomous mode is used or not
-
+    - deg (float): % of neuron degradation
+    - seed: seed for the random degradation
     Returns:
     - X (matriz): hidden satate for all the time series
     - C_aut: last autoconceptor
@@ -416,6 +421,8 @@ def forward_rnn_CL_deg(nu,a,beta,params, ut,C_init,C_target,C1,C2,x_init=None,au
     C_t=C_target
     #setting the lambda scan
     lamda = np.linspace(0, 1, T)
+    #generating the index fot the fail nodes
+    _,fail=degradation(x,deg,seed)
     # temporal loop
     for t_idx in range(T):#iterating through the time vector
         
@@ -424,9 +431,6 @@ def forward_rnn_CL_deg(nu,a,beta,params, ut,C_init,C_target,C1,C2,x_init=None,au
         if C_target is None:
             C_t=lamda[t_idx]*C1+(1-lamda[t_idx])*C2
             
-        #network degradation    
-        if t_idx> int(T/2):
-            x[10]=0
         #autoconceptor
         # C_aut=C_aut+nu*((x-C_aut @ x) @ x.T-(a**(-2))*C_aut)
         C_aut = C_aut + nu*(np.outer(x - C_aut @ x, x) - (a**(-2)*C_aut))
@@ -447,8 +451,8 @@ def forward_rnn_CL_deg(nu,a,beta,params, ut,C_init,C_target,C1,C2,x_init=None,au
         x = (1 - params["a_dt"]) * x + params["a_dt"] * np.tanh(d)
         x = C_adapt @ x
         #introducing manual degradation
-        if t_idx> int(T/2):
-            x[10]=0
+        if t_idx> int(T/n):
+            x[fail]=0
             
         # Storing the hidden state
         X[t_idx] = x
@@ -511,4 +515,200 @@ def forward_rnn_interp(params, t,C1,Cs,x_init=None): #autonomous mode True by de
         X[t_idx] = x
         
     return X
+
+
+def forward_rnn_mix_deg(nu,a,beta,params, ut,C_init,C_target,C1,C2,x_init=None,autonomous=False,deg=0,seed=42): #autonomous mode False by default
+    """
+    Forward pass of a recurrent neural network (RNN) .With Conceptor control loop
+
+    Args:
+    - nu: learning rate  
+    - a: aperture
+    - beta: control gain 
+    - params (dict): dictionary containing the RNN parameters (weights and biases).
+    - ut (ndarray): input signal. For lambda scan ut->t_scan 
+    - x_init (ndarray, optional): initial state of the RNN. Defaults to None.
+    - C_init: initial conceptor for the autoconceptor eq C(0).
+    - C_target : Traget conceptor for the CCL logic
+    - C1, C2: sine(T1), sine(T2) input conceptor. For the lambda scan
+    - Autonomous: True or False if the autonomous mode is used or not
+    - deg (float): % of neuron degradation
+    - seed: seed for the random degradation
+
+    Returns:
+    - X (matriz): hidden satate for all the time series
+    - C_aut: last autoconceptor
+    
+    
+    use params_trained for every case that you use this function anter training the model
+
+    """
+    if x_init is None:
+        x = params["x_ini"]
+    else:
+        x = x_init
+    x = np.ravel(x)  
+          
+    T=len(ut)
+    N=params['w'].shape[0]
+    # Creating the container for the state matrix
+    X = np.zeros((T, N))
+    #Seting the initial Cs
+    C_adapt=C_init
+    C_t=C_target
+    #setting the lambda scan
+    lamda = np.linspace(0, 1, T)
+    #generating the index fot the fail nodes
+    _,fail=degradation(x,deg,seed)
+    # temporal loop
+    for t_idx in range(T):#iterating through the time vector
+        
+        #if we dont have a target, the target is the lambda scan C
+        #lambda scan
+        if C_target is None:
+            C_t=lamda[t_idx]*C1+(1-lamda[t_idx])*C2
+            
+        
+        #autoconceptor
+        # C_aut=C_aut+nu*((x-C_aut @ x) @ x.T-(a**(-2))*C_aut)
+        C_adapt = C_adapt + nu*(np.outer(x - C_adapt @ x, x) - (a**(-2)*C_adapt))-beta*(C_adapt-C_t)
+
+        
+         
+        u_t =  (
+            ut[t_idx] if not autonomous else np.dot(params["wout"], x) + params["bias_out"]
+            )
+        #The part inside the tanh
+        d = params["w"] @ x \
+            + params["win"] @ u_t \
+            + params["bias"]
+    
+        # Updating 'leaky tanh', element-wise multiplication
+        # leaky tanh + conceptor
+        x = (1 - params["a_dt"]) * x + params["a_dt"] * np.tanh(d)
+        x = C_adapt @ x
+        #introducing manual degradation
+        if t_idx> int(T/n):
+            x[fail]=0
+            
+        # Storing the hidden state
+        X[t_idx] = x
+
+    return X, C_adapt
+
+
+
+def forward_rnn_mix(nu,a,beta,params, ut,C_init,C_target,C1,C2,x_init=None,autonomous=False): #autonomous mode False by default
+    """
+    Forward pass of a recurrent neural network (RNN) .With Conceptor control loop
+
+    Args:
+    - nu: learning rate  
+    - a: aperture
+    - beta: control gain 
+    - params (dict): dictionary containing the RNN parameters (weights and biases).
+    - ut (ndarray): input signal. For lambda scan ut->t_scan 
+    - x_init (ndarray, optional): initial state of the RNN. Defaults to None.
+    - C_init: initial conceptor for the autoconceptor eq C(0).
+    - C_target : Traget conceptor for the CCL logic
+    - C1, C2: sine(T1), sine(T2) input conceptor. For the lambda scan
+    - Autonomous: True or False if the autonomous mode is used or not
+
+    Returns:
+    - X (matriz): hidden satate for all the time series
+    - C_aut: last autoconceptor
+    
+    
+    use params_trained for every case that you use this function anter training the model
+
+    """
+    if x_init is None:
+        x = params["x_ini"]
+    else:
+        x = x_init
+    x = np.ravel(x)  
+          
+    T=len(ut)
+    N=params['w'].shape[0]
+    # Creating the container for the state matrix
+    X = np.zeros((T, N))
+    #Seting the initial Cs
+    C_adapt=C_init
+    C_t=C_target
+    #setting the lambda scan
+    lamda = np.linspace(0, 1, T)
+    # temporal loop
+    for t_idx in range(T):#iterating through the time vector
+        
+        #if we dont have a target, the target is the lambda scan C
+        #lambda scan
+        if C_target is None:
+            C_t=lamda[t_idx]*C1+(1-lamda[t_idx])*C2
+            
+        
+        #autoconceptor
+        # C_aut=C_aut+nu*((x-C_aut @ x) @ x.T-(a**(-2))*C_aut)
+        C_adapt = C_adapt + nu*(np.outer(x - C_adapt @ x, x) - (a**(-2)*C_adapt))-beta*(C_adapt-C_t)
+
+        
+         
+        u_t =  (
+            ut[t_idx] if not autonomous else np.dot(params["wout"], x) + params["bias_out"]
+            )
+        #The part inside the tanh
+        d = params["w"] @ x \
+            + params["win"] @ u_t \
+            + params["bias"]
+    
+        # Updating 'leaky tanh', element-wise multiplication
+        # leaky tanh + conceptor
+        x = (1 - params["a_dt"]) * x + params["a_dt"] * np.tanh(d)
+        x = C_adapt @ x
+       
+            
+        # Storing the hidden state
+        X[t_idx] = x
+
+    return X, C_adapt
+
+
+
+def degradation(matrix, zero_percentage,seed):
+    """
+    Randomly adds zeros to a matrix.
+
+    Args:
+      matrix: The matrix to modify (NumPy array).
+      zero_percentage: The percentage of elements that will be turned into zeros (0–100).
+      
+    Results:
+      matrix_with_zeros: The final matrix with the zeros (NumPy array)
+      
+    """
+    
+    #how many elements should be zero:
+    num_elements = matrix.size
+    num_zeros = int(num_elements * (zero_percentage / 100))
+
+    # Get random indices to replace with zeros
+    rng = np.random.default_rng(seed)
+    index = rng.choice(num_elements, num_zeros, replace=False)
+
+    # Create a mask for the indices that will become 0
+    mask = np.zeros(num_elements, dtype=bool)
+    mask[index] = True
+
+    # Flatten the matrix into a 1D array
+    flat_matrix = matrix.flatten()
+
+    # Replace the selected elements with 0
+    flat_matrix[mask] = 0
+
+    # Reshape back to the original matrix shape
+    matrix_with_zeros = flat_matrix.reshape(matrix.shape)
+
+    return matrix_with_zeros, index
+
+
+
 

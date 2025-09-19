@@ -1,8 +1,10 @@
-# Adaption in Neuromorphic Chips
+# Adaptation in Neuromorphic Chips
 
-This repository presents an exploration of **conceptors** and the **Conceptor Control Loop (CCL)**, introduced in Pourcel et al. (2024), to enhance the adaptivity of **Reservoir Computing (RC)** systems and to study their potential for **neuromorphic implementations**.  
+This repository is part of the EU-funded **NEHIL project** ([NEHIL.eu](https://www.nehil.eu/), Project ID [101194363](https://cordis.europa.eu/project/id/101194363)), which addresses the growing need for more efficient and powerful computing systems by developing new neuromorphic architectures.  
 
-The work aims to demonstrate how conceptors can transcend static projections by adapting online through the CCL, allowing RC systems to dynamically adjust to new temporal patterns, an essential property for robust neuromorphic computation.
+Within this context, the repository presents an exploration of **conceptors** and the **Conceptor Control Loop (CCL)**, as introduced in Pourcel et al. (2024), to enhance the adaptivity of **Reservoir Computing (RC)** systems and to assess their potential for **neuromorphic implementations**.  
+
+The study demonstrates how conceptors can go beyond static projections by adapting online through the CCL, enabling RC systems to dynamically adjust to new temporal patterns, an essential property for robust neuromorphic computation.
 
 ---
 
@@ -52,6 +54,6 @@ These results are consistent with the findings of Pourcel et al. (2024), emphasi
 ### Task 2
 ---
 
-## Reference
+## References
 
 Pourcel, G., Goldmann, M., Fischer, I., & Soriano, M. C. (2024). *Adaptive control of recurrent neural networks using conceptors.* **Chaos, 34**(10), 103127. https://doi.org/10.1063/5.0211692  

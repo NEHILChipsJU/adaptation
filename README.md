@@ -20,7 +20,7 @@ $$
 The objective is to generate an output corresponding to the interpolated conceptor $C_{interp}$.
 
 ---
-## Task 1: Network degradation
+## Task 2: Network degradation
 
 ---
 ## Repository Structure

@@ -61,7 +61,7 @@ $$
 \sigma^2_{degraded}< 0.1 \cdot \sigma^2
 $$
 
-The results show that, when using a constant coneptor or the CCL, the failure rate of the network with 10% of its neurons disbled remains below 20%. Moreover, with the CCL, the failure rate can be further reduced to about 5% under the same level of degradation. This findings highlight the effectiveness of the Concerptor Control Loop in enhancing robustness of Reservoir Computing systems.
+The results show that, when using either a constant conceptor or the CCL, the failure rate of the network with 10% of its neurons disabled remains below 20%. Furthermore, with the CCL, the failure rate can be reduced to about 5% under the same level of degradation and maintained below 20% even for higher levels of degradation. These findings highlight the effectiveness of the Conceptor Control Loop in enhancing the robustness of Reservoir Computing systems.
 
 ---
 

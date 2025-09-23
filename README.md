@@ -6,11 +6,13 @@ Within this context, the repository presents an exploration of **conceptors** an
 
 The study demonstrates how conceptors can go beyond static projections by adapting online through the CCL, enabling RC systems to dynamically adjust to new temporal patterns, an essential property for robust neuromorphic computation.
 
+The reservoir is implemented using an Echo State Network (ESN).
+
 ---
 
 ## Task 1: Sinusoidal Interpolation
 
-The RC was trained with **two sine waves** of equal amplitude but different periods.  
+The ESN was trained with **two sine waves** of equal amplitude but different periods.  
 Each sine wave defines a distinct internal reservoir state, represented by two conceptors: **C₁** and **C₂**.  
 
 To interpolate between them, the following definition is used:
@@ -23,12 +25,13 @@ The objective is to generate an output corresponding to the interpolated concept
 
 ---
 ## Task 2: Network degradation
+For this task, the ESN was trained on a single sinusoidal signal and the then was **progressively degraded** by disabling different subsets of neurons. The goal was to evaluate the **robustness** of the ESN, to this end, two approaches are considered: applying a constant conceptor (corresponding to the trained sinusoidal signal) and applying the Conceptor Control Loop (CCL). Their performance is compared in order to demonstrate that the adaptive nature of the CCL provides a clear advantage in maintaining network robustness.
+
+This experiment is directly related to the notion of **"graceful degradation"**, a property shared by both artificial and biological neural networks, where performance decreases gradually as more units are lost (McClelland et al. (1986)). 
 
 ---
 ## Repository Structure
-- **`utils`**
-
-	- **`rrnn_utils.py`**  
+- **`rrnn_utils.py`**  
   Contains functions for training the reservoir, computing internal states, and calculating conceptors.  
 
 	- **`utils.py`**  
@@ -46,14 +49,25 @@ The objective is to generate an output corresponding to the interpolated concept
 ### Task 1
 By scanning the interpolation parameter $\lambda \in [0,1]$, the following observations were obtained:  
 
-- **constant interpolated conceptor** is able to perform interpolation only under limited conditions.  
+- **Constant interpolated conceptor** is able to perform interpolation only under limited conditions.  
 - However, when the **Conceptor Control Loop (CCL)** is applied, the range of conditions where interpolation can be successfully achieved is significantly extended.
 
 These results are consistent with the findings of Pourcel et al. (2024), emphasizing the potential of adaptive mechanisms for neuromorphic hardware applications.
 
 ### Task 2
+A **qualitative assessment** was conducted after the removal of K neurons. For each increment of K, 70 trials were performed with randomly removed neurons. The network was considered to fail when the variance of the principal component of the degraded network ($\sigma^2_{degraded}$) dropped below 10% of the variance observed in the non-degraded network ($\sigma^2$).
+
+$$
+\sigma^2_{degraded}< 0.1 \cdot \sigma^2
+$$
+
+The results show that, when using a constant coneptor or the CCL, the failure rate of the network with 10% of its neurons disbled remains below 20%. Moreover, with the CCL, the failure rate can be further reduced to about 5% under the same level of degradation. This findings highlight the effectiveness of the Concerptor Control Loop in enhancing robustness of Reservoir Computing systems.
+
 ---
 
 ## References
 
-Pourcel, G., Goldmann, M., Fischer, I., & Soriano, M. C. (2024). *Adaptive control of recurrent neural networks using conceptors.* **Chaos, 34**(10), 103127. https://doi.org/10.1063/5.0211692  
+- Pourcel, G., Goldmann, M., Fischer, I., & Soriano, M. C. (2024). *Adaptive control of recurrent neural networks using conceptors.* **Chaos, 34**(10), 103127. https://doi.org/10.1063/5.0211692  
+- McClelland, J. L., Rumelhart, D. E., & PDP Research Group. (1986).  
+*Parallel Distributed Processing, Volume 2: Explorations in the Microstructure of Cognition: Psychological and Biological Models.*  
+Cambridge, MA: MIT Press.

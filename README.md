@@ -1,8 +1,8 @@
 # Adaptation in Neuromorphic Chips
 
-This repository is part of the EU-funded **NEHIL project** ([NEHIL.eu](https://www.nehil.eu/), Project ID [101194363](https://cordis.europa.eu/project/id/101194363)), which addresses the growing need for more efficient and powerful computing systems by developing new neuromorphic architectures.  
+This repository is part of the **NEHIL project**, funded by ChipsJU (EU) and the Korean NRF, ([NEHIL.eu](https://www.nehil.eu/), Project ID [101194363](https://cordis.europa.eu/project/id/101194363)), which addresses the growing need for more efficient and powerful computing systems by developing new neuromorphic architectures.  
 
-Within this context, the repository presents an exploration of **conceptors** and the **Conceptor Control Loop (CCL)**, as introduced in Pourcel et al. (2024), to enhance the adaptivity of **Reservoir Computing (RC)** systems and to assess their potential for **neuromorphic implementations**.  
+Within this context, the repository presents an exploration of **conceptors** and the **Conceptor Control Loop (CCL)**, inspired in Pourcel et al. (2024), to enhance the adaptivity of **Reservoir Computing (RC)** systems and to assess their potential for **neuromorphic implementations**.  
 
 The study demonstrates how conceptors can go beyond static projections by adapting online through the CCL, enabling RC systems to dynamically adjust to new temporal patterns, an essential property for robust neuromorphic computation.
 
@@ -25,7 +25,7 @@ The objective is to generate an output corresponding to the interpolated concept
 
 ---
 ## Task 2: Network degradation
-For this task, the ESN was trained on a single sinusoidal signal and the then was **progressively degraded** by disabling different subsets of neurons. The goal was to evaluate the **robustness** of the ESN, to this end, two approaches are considered: applying a constant conceptor (corresponding to the trained sinusoidal signal) and applying the Conceptor Control Loop (CCL). Their performance is compared in order to demonstrate that the adaptive nature of the CCL provides a clear advantage in maintaining network robustness.
+For this task, the ESN was trained on a single sinusoidal signal and then was **progressively degraded** by disabling different subsets of neurons. The goal was to evaluate the **robustness** of the ESN, to this end, two approaches are considered: applying a constant conceptor (corresponding to the trained sinusoidal signal) and applying the Conceptor Control Loop (CCL). Their performance is compared in order to demonstrate that the adaptive nature of the CCL provides a clear advantage in maintaining network robustness.
 
 This experiment is directly related to the notion of **"graceful degradation"**, a property shared by both artificial and biological neural networks, where performance decreases gradually as more units are lost (McClelland et al. (1986)). 
 

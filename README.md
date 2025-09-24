@@ -49,8 +49,13 @@ This experiment is directly related to the notion of **"graceful degradation"**,
 ### Task 1
 By scanning the interpolation parameter $\lambda \in [0,1]$, the following observations were obtained:  
 
-- **Constant interpolated conceptor** is able to perform interpolation only under limited conditions.  
+- The **constant interpolated conceptor** can perform interpolation only under limited conditions. As illustrated in the figures below, the greater the difference between the periods of the sine waves used to train the ESN, the more difficult it becomes for the constant conceptor to achieve successful interpolation.
+  
+  <img src="figures/Interpolation/y_lamda_scan_C.png" alt="Interpolation with constant conceptor" width="360"/> <img src="figures/Interpolation/Instanteneous_Periode_C.png" alt="Interpolation with constant conceptor" width="400"/> 
+  
 - However, when the **Conceptor Control Loop (CCL)** is applied, the range of conditions where interpolation can be successfully achieved is significantly extended.
+
+  <img src="figures/Interpolation/y_lamda_scan_CCL.png" alt="Interpolation with CCL" width="360"/> <img src="figures/Interpolation/Instanteneous_Periode_CCL.png" alt="Interpolation with CCL" width="400"/> 
 
 These results are consistent with the findings of Pourcel et al. (2024), emphasizing the potential of adaptive mechanisms for neuromorphic hardware applications.
 
@@ -61,7 +66,10 @@ $$
 \sigma^2_{degraded}< 0.1 \cdot \sigma^2
 $$
 
-The results show that, when using either a constant conceptor or the CCL, the failure rate of the network with more tha 10% of its neurons disabled (60 neurons) remains below 20%. Furthermore, with the CCL, the failure rate can be reduced to about 5% under the same level of degradation and maintained below 20% even for higher levels of degradation. These findings highlight the effectiveness of the Conceptor Control Loop in enhancing the robustness of Reservoir Computing systems.
+The results show that, when using either a constant conceptor or the CCL, the failure rate of the network with 10.7% of its neurons disabled (60 neurons) remains below 20%. Furthermore, with the CCL, the failure rate can be reduced to about 5% under the same level of degradation and maintained below 20% even for higher levels of degradation. These findings highlight the effectiveness of the Conceptor Control Loop in enhancing the robustness of Reservoir Computing systems.
+<div align="center">
+<img src="figures/Network degradation/qualitative_rep70_th0.1_N560_reg1.0_a25_beta0.4_nu2.5e-05_T20_sr1.6_alpha0.75_scaling0.9_bs0.4.png" alt="Qualitative Evaluation, network degradation" width="360"/>
+</div>
 
 ---
 

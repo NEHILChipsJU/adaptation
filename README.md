@@ -78,6 +78,9 @@ By scanning the interpolation parameter $\lambda \in [0,1]$, the following obser
 
 These results are consistent with the findings of Pourcel et al. (2024), emphasizing the potential of adaptive mechanisms for neuromorphic hardware applications.
 
+
+
+
 ### Task 2
 A **qualitative assessment** was conducted after the removal of K neurons. For each increment of K, 70 trials were performed with randomly removed neurons. The network was considered to fail when the variance of the principal component of the degraded network ($\sigma^2_{degraded}$) dropped below 10% of the variance observed in the non-degraded network ($\sigma^2$).
 

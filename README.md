@@ -89,7 +89,7 @@ As an example, the following figure shows that when a constant conceptor is appl
 
 <div align="center">
 
-| <img src="figures/Network degradation/PCA_3D_K80.png" alt="Qualitative Evaluation, PCA" width="350"/> |
+| <img src="figures/Network degradation/PCA_3D_K80.png" alt="Qualitative Evaluation, PCA" width="340"/> |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 | *Figure 3. PCA comparison after removing 80 neurons from a 560-neuron ESN.* |
 

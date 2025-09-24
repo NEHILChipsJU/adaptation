@@ -221,7 +221,7 @@ plt.ylabel("Failure Rate")
 plt.title("Qualitative evaluation")
 plt.grid()
 plt.legend()
-plt.savefig(f"plots/qualitative_rep{len(seed)}_th{args.threshold}_N{args.N}_reg{args.reg}_seed{args.seed}_a{args.a}_beta{args.beta}_nu{args.nu}_T{T1}_sESN{args.seedESN}_sr{args.spectral_radius}_alpha{args.alpha}_scaling{args.scaling}_bs{args.bias_scaling}.png", dpi=300, bbox_inches='tight')
+# plt.savefig(f"plots/qualitative_rep{len(seed)}_th{args.threshold}_N{args.N}_reg{args.reg}_seed{args.seed}_a{args.a}_beta{args.beta}_nu{args.nu}_T{T1}_sESN{args.seedESN}_sr{args.spectral_radius}_alpha{args.alpha}_scaling{args.scaling}_bs{args.bias_scaling}.png", dpi=300, bbox_inches='tight')
 plt.show()
 
 

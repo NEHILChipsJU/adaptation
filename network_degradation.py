@@ -17,8 +17,8 @@ from utils.rnn_utils import trained_model_new
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--m", type=int, default=70) #removed neurons
-parser.add_argument("--seed", type=int, default=5432) #seed for the random choise of degraded neurons
+parser.add_argument("--m", type=int, default=80) #removed neurons
+parser.add_argument("--seed", type=int, default=14) #seed for the random choise of degraded neurons
 
 args = parser.parse_args()
 
@@ -115,7 +115,7 @@ last=int(len(ut_train1)/2)
 label=f"No degradation"
 # PCA_nodeg=visualize_PCA_3D(X1[-last:],f"X for NO deg ")
 trained_model_new(X1[washout:],ut_train1,yt_train1,params_trained,washout,True,None,label)
-# plt.savefig(f"plots/NoDeg_M{args.m}_seed{args.seed}.png", dpi=300, bbox_inches="tight")
+
 
 
 #C=cte with degradation
@@ -123,14 +123,14 @@ label=f" C with {deg:.2f}% degradation "
 X_cte_deg=forward_rnn_deg(params_trained, ut_train1,X_init, True,C1,deg,args.seed)
 # PCA_C=visualize_PCA_3D(X_cte_deg[-last:],f"X for {deg}% deg with C=C1) ")
 trained_model_new(X_cte_deg[washout:],t,yt_train1,params_trained,washout, True,C1,label)
-# plt.savefig(f"plots/C_deg__M{args.m}_seed{args.seed}.png", dpi=300, bbox_inches="tight")
+
 
 #CCL with degradation
 label=f" CCL (separed) with {deg:.2f}% degradation "
 X_CL_deg,_=forward_rnn_CL_deg(nu,a,beta,params_trained, ut_train1,C_init,C_t,None,None,X_init,True,deg,args.seed) #x% of degradation
 # PCA_CCL=visualize_PCA_3D(X_CL_deg[-last:],f"X for {deg}% deg with CCL (separed) ")
 trained_model_new(X_CL_deg[washout:],t,yt_train1,params_trained,washout,True,None,label)
-# plt.savefig(f"plots/CCL_deg_M{args.m}_seed{args.seed}.png", dpi=300, bbox_inches="tight")
+
 
 
 
@@ -138,7 +138,7 @@ trained_model_new(X_CL_deg[washout:],t,yt_train1,params_trained,washout,True,Non
 X=[X1,X_CL_deg[-last:],X_cte_deg[-last:]]
 label=['No Degradation','CCL','C']
 visualize_multiple_PCA_3D(X,label)
-plt.savefig(f"plots/PCA_M{args.m}_seed{args.seed}.png", dpi=300, bbox_inches="tight")
+# plt.savefig(f"plots/PCA_M{args.m}_seed{args.seed}.png", dpi=300, bbox_inches="tight")
 
 
 

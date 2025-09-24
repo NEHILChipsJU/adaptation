@@ -172,7 +172,7 @@ for i in range(len(T2)):
     #########################################################################
     
     visualize_sine_interpolation(t, ut_train2, params_trained, step, washout, C1, Cs[i])
-    plt.savefig(f"figures/sw_interp_T2{T2[i]}_C.png", dpi=300, bbox_inches="tight")
+    # plt.savefig(f"figures/sw_interp_T2{T2[i]}_C.png", dpi=300, bbox_inches="tight")
     #X_lambda,lam=visualize_sine_interpolation_one(t, ut_train2, params_trained, step, washout, C1, Cs[i])
     
     ##########################################################################################
@@ -188,49 +188,7 @@ for i in range(len(T2)):
     Y_scans.append(Y_scan)
     t_scan = np.arange(len(Y_scan)) * dt
     
-   #  # Secondary axis values (λ)
-   #  lam = np.linspace(0, 1, len(Y_scan))
-   #  k = np.arange(len(Y_scan))
-
-   #  fig, ax1 = plt.subplots()
-    
-   #  # First plot (x = k)
-   #  ax1.plot(k, Y_scan)
-   #  ax1.set_xlabel("k")
-   #  ax1.set_ylabel("y(k)")
-   #  ax1.set_title("Output interpolation λ scan")
-   #  ax1.set_ylim([-1.5, 1.5])
-    
-   #  # Force scientific notation on bottom axis
-   #  ax1.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
-    
-   #  # Second plot (x = λ) on a twin axis
-   #  ax2 = ax1.twiny()
-   #  ax2.plot(lam, Y_scan, color="none")  # don't show the second line
-   #  # ax2.set_xlabel("λ")
-    
-   #  # Activate grid for both axes
-   #  ax1.grid(True)
-   #  # ax2.grid(True)
-    
-   #  plt.show()
-
-    
-    
-    ##############################################
-    
-   # Instantaneous phase 
-  
-     ############################################
-   #  # ==============================
-   #  # Parameters and input signal
-   #  # ==============================
-   #  dt = T1/points  # sampling period
    
-   #  Y_scan = Y_scan.flatten()
-    
-   #  #Shoeing the results
-   #  T_instant(dt,t_scan,Y_scan)
     
     
     
@@ -269,7 +227,7 @@ ax2.set_xlabel("λ")
 ax1.legend(frameon=False, loc="upper center",  ncol=len(T2))
 ax1.margins(x=0)
 ax1.grid(True)
-plt.savefig(f"figures/y_lamda_scan_C.png", dpi=300, bbox_inches="tight")
+# plt.savefig(f"figures/y_lamda_scan_C.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 
@@ -302,7 +260,7 @@ plt.ylabel("Instantaneous Period T(k)")
 plt.margins(x=0)
 plt.grid()
 plt.legend()
-plt.savefig(f"figures/Instanteneous_Periode_C.png", dpi=300, bbox_inches="tight")
+# plt.savefig(f"figures/Instanteneous_Periode_C.png", dpi=300, bbox_inches="tight")
 plt.show()
    
  
@@ -322,7 +280,7 @@ plt.xlim([50,300])
 plt.margins(x=0)
 plt.grid()
 plt.legend()
-plt.savefig(f"figures/sinus.png", dpi=300, bbox_inches="tight")
+# plt.savefig(f"figures/sinus.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 

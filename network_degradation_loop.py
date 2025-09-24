@@ -3,20 +3,16 @@ import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import argparse
-from scipy.signal import find_peaks
 
 
 from utils.rnn_utils import rnn_params
 from utils.rnn_utils import forward_rnn
 from utils.rnn_utils import forward_rnn_deg
-from utils.rnn_utils import forward_rnn_mix_deg
 from utils.rnn_utils import forward_rnn_CL_deg
 from utils.utils import visualize_PCA_3D
 from utils.utils import PCA_3D
 from utils.rnn_utils import ridge
 from utils.rnn_utils import compute_conceptor
-from utils.utils import align_by_first_peak
-from utils.utils import NRMSE
 from utils.rnn_utils import trained_model_new
 
 #Parameters that we want to acces trough the terminal
@@ -26,10 +22,10 @@ parser.add_argument("--m", type=int, default=10)
 parser.add_argument("--random", type=int, default=70)
 parser.add_argument("--threshold", type=float, default=0.1)
 parser.add_argument("--reg", type=float, default=1)
-parser.add_argument("--N", type=int, default=10)
+parser.add_argument("--N", type=int, default=560)
 parser.add_argument("--spectral_radius", type=float, default=1.6)
 parser.add_argument("--scaling", type=float, default=0.9)
-parser.add_argument("--bias_scaling", type=float, default=0.4)
+parser.add_argument("--bias_scaling", type=float, default=0.45)
 parser.add_argument("--alpha", type=float, default=0.75)
 parser.add_argument("--beta", type=float, default=0.4)
 parser.add_argument("--nu", type=float, default=2.5e-5 )

@@ -8,8 +8,6 @@ from utils.rnn_utils import rnn_params
 from utils.rnn_utils import forward_rnn
 from utils.rnn_utils import forward_rnn_deg
 from utils.rnn_utils import forward_rnn_CL_deg
-from utils.rnn_utils import forward_rnn_CL
-from utils.utils import visualize_PCA_3D
 from utils.utils import visualize_multiple_PCA_3D
 from utils.rnn_utils import ridge
 from utils.rnn_utils import compute_conceptor
@@ -112,7 +110,7 @@ last=int(len(ut_train1)/2)
 
 #computing the results and showing them
 #No degradation
-label=f"No degradation"
+label="No degradation"
 # PCA_nodeg=visualize_PCA_3D(X1[-last:],f"X for NO deg ")
 trained_model_new(X1[washout:],ut_train1,yt_train1,params_trained,washout,True,None,label)
 
@@ -122,13 +120,13 @@ trained_model_new(X1[washout:],ut_train1,yt_train1,params_trained,washout,True,N
 label=f" C with {deg:.2f}% degradation "
 X_cte_deg=forward_rnn_deg(params_trained, ut_train1,X_init, True,C1,deg,args.seed)
 # PCA_C=visualize_PCA_3D(X_cte_deg[-last:],f"X for {deg}% deg with C=C1) ")
-trained_model_new(X_cte_deg[washout:],t,yt_train1,params_trained,washout, True,C1,label)
+trained_model_new(X_cte_deg[washout:],t,yt_train1,params_trained,washout, True,None,label)
 
 
 #CCL with degradation
-label=f" CCL (separed) with {deg:.2f}% degradation "
+label=f" CCL with {deg:.2f}% degradation "
 X_CL_deg,_=forward_rnn_CL_deg(nu,a,beta,params_trained, ut_train1,C_init,C_t,None,None,X_init,True,deg,args.seed) #x% of degradation
-# PCA_CCL=visualize_PCA_3D(X_CL_deg[-last:],f"X for {deg}% deg with CCL (separed) ")
+# PCA_CCL=visualize_PCA_3D(X_CL_deg[-last:],f"X for {deg}% deg with CCL")
 trained_model_new(X_CL_deg[washout:],t,yt_train1,params_trained,washout,True,None,label)
 
 

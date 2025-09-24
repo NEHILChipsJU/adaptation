@@ -691,12 +691,12 @@ def degradation(matrix, zero_percentage,seed):
     Randomly adds zeros to a matrix.
 
     Args:
-      matrix: The matrix to modify (NumPy array).
-      zero_percentage: The percentage of elements that will be turned into zeros (0–100).
+    - matrix(NumPy array): The matrix to modify.
+    - zero_percentage: The percentage of elements that will be turned into zeros (0–100).
       
     Results:
-      matrix_with_zeros: The final matrix with the zeros (NumPy array)
-      
+    - matrix_with_zeros (NumPy array): The final matrix with the zeros 
+    - index (NumPy array): random indexs selected for the ceros   
     """
     
     #how many elements should be zero:

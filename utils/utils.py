@@ -305,6 +305,8 @@ def visualize_multiple_PCA_3D(X,label):
     # ax.set_title(f"PCA 3D")
     plt.grid(True)
     plt.legend()
+    # ax.view_init(elev=50, azim=45)
+    plt.tight_layout()
     plt.show()      
     
     

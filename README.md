@@ -113,7 +113,7 @@ The results show that, when using either a constant conceptor or the CCL, the fa
 
 ## References
 
-- G. Pourcel, M. Goldmann, I. Fischer, and M. C. Soriano, *Adaptive control of recurrent neural networks using conceptors*, Chaos: An Interdisciplinary Journal of Nonlinear Science, vol. 34, no. 6, p. 063118, 2024.[https://doi.org/10.1063/5.0211692](https://doi.org/10.1063/5.0211692)
+- G. Pourcel, M. Goldmann, I. Fischer, and M. C. Soriano, *Adaptive control of recurrent neural networks using conceptors*, Chaos: An Interdisciplinary Journal of Nonlinear Science, vol. 34, no. 6, p. 063118, 2024. [https://doi.org/10.1063/5.0211692](https://doi.org/10.1063/5.0211692)
 
 - J. L. McClelland, D. E. Rumelhart, and P. R. Group, *Parallel Distributed Processing, Volume 2: Explorations in the Microstructure of Cognition: Psychological and Biological Models*. The MIT Press, 1986.
 

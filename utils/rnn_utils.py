@@ -169,19 +169,25 @@ def forward_rnn_deg(params, ut,x_init=None, autonomous=False,conceptor=None,deg=
         u_t = (
             ut[t_idx] if not autonomous else np.dot(params["wout"], x) + params["bias_out"]
             )
+        #introducing the degradation manually
+        # if t_idx> int(T/n):
+        #     x[fail]=0
         #The part inside the tanh
-        dentro = params["w"] @ x \
+        d = params["w"] @ x \
             + params["win"] @ u_t \
             + params["bias"]
     
         # Updating 'leaky tanh', element-wise multiplication
-        x = conceptor @ ((1 - params["a_dt"]) * x \
-             + params["a_dt"] * np.tanh(dentro))
-        #introducing the degradation manually
+        x = ((1 - params["a_dt"]) * x \
+             + params["a_dt"] * np.tanh(d))
+        
+            
+        x=conceptor @ x
         if t_idx> int(T/n):
             x[fail]=0
         # Storing the hidden state
         X[t_idx] = x
+        #introducing the degradation manually
         
     return X
 
@@ -239,15 +245,6 @@ def ridge(beta,X,Y_target,step,params):
     #computing the mse
     mse = np.mean((Y_pred[:-step] - Y_target[:-step])**2)
     
-    #plttting the results
-    plt.figure()
-    plt.plot(Y_target, label="Real (Target)")
-    plt.plot(Y_pred, label="Predicted (ESN)")
-    plt.title(f"{step}-step ahead prediction on training data")
-    plt.xlabel('k')
-    plt.legend()
-    plt.show()
-    
     #updating params
     params['wout']=W_out
     params['bias_out']=bias_out
@@ -260,7 +257,7 @@ def ridge(beta,X,Y_target,step,params):
 
 
 
-def trained_model_new(X,ut,yt,params_trained,washout,autonomous,conceptor):
+def trained_model_new(X,ut,yt,params_trained,washout,autonomous,conceptor,label=None):
     """
     Using the trained model in order to predict a new input
     
@@ -272,6 +269,7 @@ def trained_model_new(X,ut,yt,params_trained,washout,autonomous,conceptor):
     - washout (int): number of steps for the washout
     - autonomous (boolean): True or False if we want to use this mode or not
     - conceptor (array): The conceptor we want to use or None
+    - label (string): if we want to give an especific title to the plot
     
     Returns:
     - plot
@@ -288,21 +286,25 @@ def trained_model_new(X,ut,yt,params_trained,washout,autonomous,conceptor):
     #showing the predictiosn versus the real data
     plt.figure()
     plt.plot(yt, label="Real (Target)")
-    if autonomous is False:
-        plt.title("1-step ahead prediction on new sine wave")
-        mse_new = np.mean((Y_pred - yt)**2)
-        return mse_new
+    
+    if label is not None:
+        plt.title(label)
     else:
-        plt.title("1-step ahead, Autonomous")
-    if autonomous is True and conceptor is not None:
-        plt.title("1-step ahead, Autonomous with conceptor")
+        if autonomous is False:
+            plt.title("1-step ahead prediction on new sine wave")
+            mse_new = np.mean((Y_pred - yt)**2)
+            return mse_new
+        else:
+            plt.title("1-step ahead, Autonomous")
+        if autonomous is True and conceptor is not None:
+            plt.title("1-step ahead, Autonomous with conceptor")
     plt.xlabel('k')
     plt.plot(Y_pred, label="Predicted (ESN)")
     
     plt.legend()
     plt.show()
     
-    return X
+    
 
 
 
@@ -441,19 +443,30 @@ def forward_rnn_CL_deg(nu,a,beta,params, ut,C_init,C_target,C1,C2,x_init=None,au
         u_t =  (
             ut[t_idx] if not autonomous else np.dot(params["wout"], x) + params["bias_out"]
             )
+        
+        #introducing manual degradation
+        # if t_idx> int(T/n):
+        #     x[fail]=0
+            
         #The part inside the tanh
         d = params["w"] @ x \
             + params["win"] @ u_t \
             + params["bias"]
-    
+        
+        
+        
         # Updating 'leaky tanh', element-wise multiplication
         # leaky tanh + conceptor
         x = (1 - params["a_dt"]) * x + params["a_dt"] * np.tanh(d)
-        x = C_adapt @ x
+        
+        #introducing manual degradation
+        # if t_idx> int(T/n):
+        #     x[fail]=0
+            
+        x = C_adapt @ x    
         #introducing manual degradation
         if t_idx> int(T/n):
             x[fail]=0
-            
         # Storing the hidden state
         X[t_idx] = x
 

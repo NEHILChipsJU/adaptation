@@ -9,7 +9,7 @@ from utils.rnn_utils import forward_rnn_CL
 
 
 def visualize_sine_interpolation(
-    t, ut, params_trained, step, washout, C1, C2, C_init ,nu=None, a=None,beta=None
+    t, ut, params_trained, step, washout, C1, C2, C_init=None ,nu=None, a=None,beta=None
 ):
     """
     Visualizes the model output interpolation for several lambda values
@@ -47,6 +47,7 @@ def visualize_sine_interpolation(
         # Compute hidden states
         if nu is None:
             X = forward_rnn(params_trained, ut, None, True, C_interp)
+            title=', C'
 
         else:
             X,_=forward_rnn_CL(nu,a,beta,params_trained, ut,C_init,C_interp,None,None,None,True)
@@ -56,22 +57,36 @@ def visualize_sine_interpolation(
         # Compute prediction
         Y_pred = X @ params_trained['wout'].T + params_trained['bias_out']
 
-        # Plot in the corresponding subplot
-        axs[idx].plot(t, Y_pred, label=fr"$\lambda={lamda}$")
-        axs[idx].legend(frameon=False)
-        axs[idx].set_ylabel("y(k)")
-        axs[idx].set_ylim([-1.5, 1.5])
-        
+        # Plot
+        ax = axs[idx]
+        ax.plot(t, Y_pred, linewidth=2)
+        ax.set_ylabel("y(k)")
+        ax.set_ylim([-1.5, 1.5])
+        ax.grid(True, alpha=0.3)
+
+        # Inline label instead of legend
+        ax.text(
+            0.98, 0.82, rf"$\lambda = {lamda}$",
+            transform=ax.transAxes, ha="right", va="center",
+            bbox=dict(boxstyle="round,pad=0.2", facecolor="white", alpha=0.8)
+        )
+
+        # Clean up axis spines
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+
     axs[-1].set_xlabel("t(s)")
-    plt.suptitle("Output interpolation for different λ " + title, y=0.92)
-    plt.tight_layout()
-    plt.show()
+
+    # Title with enough space above
+    fig.suptitle("Output interpolation for different λ" + title, fontsize=16)
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
+    # plt.show()
 
 
 
 
 def visualize_sine_interpolation_one(
-    t, ut, params_trained, step, washout, C1, C2, C_init,nu=None, a=None,beta=None
+    t, ut, params_trained, step, washout, C1, C2, C_init=None,nu=None, a=None,beta=None
 ):
     """
     Visualizes the output interpolation of the trained model 
@@ -210,17 +225,8 @@ def T_instant(dt,t_scan,Y_scan):
     period_stft_smooth = savgol_filter(period_stft, 11, 3)
     
     
-    # Plot Comparison
-    plt.figure(figsize=(12,6))
-    plt.plot(t_valid, period_hilbert_smooth, 'r', label="Hilbert (smoothed)")
-    plt.plot(t_p2p, period_p2p_smooth, 'g', label="Peak-to-Peak (smoothed)")
-    plt.plot(t_stft, period_stft_smooth, 'b', label="STFT (smoothed)")
-    plt.xlabel("k")
-    plt.ylabel("Instantaneous Period T(k)")
-    plt.title("Instantaneous Period Comparison (3 Methods)")
-    plt.grid()
-    plt.legend()
-    plt.show()
+    
+    
    
     # Plot Comparison (2 Methods)
     plt.figure()
@@ -251,7 +257,7 @@ def visualize_PCA_3D(X,label):
     pca = PCA(n_components=3)  # number of axis
     X_pca = pca.fit_transform(X_centered)
     #storing the PCA1
-    PCA1=X_pca[0]
+    PCA1=X_pca[:,0]
     #Plotting the PCA
     fig = plt.figure(figsize=(12, 8))  
     ax = fig.add_subplot(111, projection='3d')
@@ -296,16 +302,100 @@ def visualize_multiple_PCA_3D(X,label):
     ax.set_xlabel("PC1")
     ax.set_ylabel("PC2")
     ax.set_zlabel("PC3")
-    ax.set_title(f"PCA 3D")
+    # ax.set_title(f"PCA 3D")
     plt.grid(True)
     plt.legend()
     plt.show()      
     
     
+def PCA_3D(X,label):
+    """
+    Visualize the PCA of any matrix, and project other the conceptor in the PCA space
+    Args:
+    - X: (numpy.ndarray): Input matrix 
+    - lable: text for the plot title
+    
+    Returns:
+    - PCA components
+    """
+    # centering the X
+    X_centered = X - np.mean(X, axis=0)
+    
+    #Obtainning the PCA components
+    pca = PCA(n_components=3)  # number of axis
+    X_pca = pca.fit_transform(X_centered)
+    #storing the PCA1
+    PCA1=X_pca[:,0]
+    PCA2=X_pca[:,1]
+    PCA3=X_pca[:,2]
+    
+    
+    
+    return PCA1, PCA2, PCA3
 
 
+def align_by_first_peak(y1, y2, prominence=None, height=None, distance=None):
+    
+    """
+    phase alignment by first peak shift
+    - y1 (numpy.ndarray): Reference output 
+    - y2 (numpy.ndarray): Output that we want to align with y1
+    
+    Returns:
+    - y2_alined (array): y2 aligned with y1
+    - shift (ind): difference between y1 and y2 indexs
+    """
+    
+    #transforming y1 and y2 
+    y1 = np.asarray(y1)
+    y2 = np.asarray(y2)
+    y1=np.ravel(y1)
+    y2=np.ravel(y2)
+    #computing all the peaks
+    peaks1, _ = find_peaks(y1, prominence=prominence, height=height, distance=distance)
+    peaks2, _ = find_peaks(y2, prominence=prominence, height=height, distance=distance)
+    
+    #peaks index
+
+    i1 = peaks1[0]
+    i2 = peaks2[0]
+
+    # aligning y2  with y1
+    shift = i2 - i1         
+    y2_aligned = np.roll(y2, -shift)
+
+    return y2_aligned,shift
 
 
+def NRMSE(y1,y2):
+    """
+    Normalized Root Mean Square Error
+    
+    phase alignment by first peak shift
+    - y1 (numpy.ndarray): Reference output 
+    - y2 (numpy.ndarray):Predicted output
+    
+    Returns:
+    - nrsme: Normalized Root Mean Square Error between y1 and y2
 
-
+    """
+    y1=np.ravel(y1)
+    y2=np.ravel(y2)
+    
+    #fist computing mse
+    mse=np.mean((y2 - y1)**2)
+    
+    #secondly rmse
+    rmse=np.sqrt(mse)
+    
+    #computing the mean of y1
+    mean=np.mean(y1)
+    std=np.std(y1)
+    
+    rang=np.max(y1)-np.min(y1)
+    
+    # finally the nrmse by mean
+    nrmse=rmse/std
+    
+    return nrmse
 

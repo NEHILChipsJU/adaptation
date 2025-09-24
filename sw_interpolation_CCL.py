@@ -51,16 +51,9 @@ def sin(T,t, A):
     s=A*np.sin((2*np.pi*t)/T)
     return s
 
-# points=20 #number of points in each period
-# dt=points/T1
-# t=np.arange(0, 300,dt)
-# plt.plot(t,sin(T1,t,A),'.-')
-# plt.xlim([0,300])
 
 
 #Defining the Temporal Series
-# dt=0.1
-# t=np.arange(0, 300,dt)
 A=1 #Sinus Amplitude
 #  we will use more than one input 
 T1=20 #fixed period
@@ -68,8 +61,7 @@ T2=[25,30,35] #variable period, we want to compare differents T2 with the same T
 points=40 #number of points in each period
 dt=T1/points
 t=np.arange(0, 300,dt)
-plt.plot(sin(T1,t,A),'.-')
-plt.xlim([0,250])
+
 
 #getting the inputs using the difined sine function
 data1=sin(T1,t,A)
@@ -131,13 +123,6 @@ y_lams=[]
 Y_scans=[]
 for i in tqdm(range(len(T2))):
     
-    #Showing the 2 sinus
-    plt.figure()
-    plt.plot(t,sin(T1,t,A),label=f"T1 = {T1}")
-    plt.plot(t,sin(T2[i],t,A),label=f"T2 = {T2[i]}")
-    plt.xlabel('t(s)')
-    plt.title("Showing the inputs")
-    plt.legend()
     
     #define a variable with the training data and the targets (to predict the last point of the time series)
     data2=sin(T2[i],t,A)
@@ -211,7 +196,7 @@ for i in tqdm(range(len(T2))):
     X_interp,_=forward_rnn_CL(nu,a,beta,params_trained, ut_train3,C_init,C_interp,None,None,X_init,True)
     
     #computing the results and showing them
-    mse_new=trained_model_new(X_interp[washout:],t,yt_train3,params_trained,step,washout,C_interp)   #Set yt, if you want to campare the results with something
+    # trained_model_new(X_interp[washout:],t,yt_train3,params_trained,step,washout,C_interp)   #Set yt, if you want to campare the results with something
     
     
     ##########################################################################
@@ -221,7 +206,8 @@ for i in tqdm(range(len(T2))):
     #########################################################################
     
     visualize_sine_interpolation(t, ut_train2, params_trained, step, washout, C1, Cs[i],C_init,nu,a,beta)
-    X_lambda,lam=visualize_sine_interpolation_one(t, ut_train2, params_trained, step, washout, C1, Cs[i],C_init,nu,a,beta)
+    plt.savefig(f"figures/sw_interp_T2{T2[i]}_CCL.png", dpi=300, bbox_inches="tight")
+    # X_lambda,lam=visualize_sine_interpolation_one(t, ut_train2, params_trained, step, washout, C1, Cs[i],C_init,nu,a,beta)
     
     
     # ###########################################################################
@@ -236,7 +222,7 @@ for i in tqdm(range(len(T2))):
     
     
     #Showing X_scan
-    visualize_PCA_3D(X_scan[washout:],f"X_scan: interpolation λ scan (0,1). T0=20,T1={T2[i]} ")
+    # visualize_PCA_3D(X_scan[washout:],f"X_scan: interpolation λ scan (0,1). T0=20,T1={T2[i]} ")
     
     # Output prediction
     Y_scan = X_scan @ params_trained['wout'].T + params_trained['bias_out'] 
@@ -245,31 +231,31 @@ for i in tqdm(range(len(T2))):
     
     
     # Secondary axis values (λ)
-    lam = np.linspace(0, 1, len(Y_scan))
-    k = np.arange(len(Y_scan))
+    # lam = np.linspace(0, 1, len(Y_scan))
+    # k = np.arange(len(Y_scan))
 
-    fig, ax1 = plt.subplots()
+    # fig, ax1 = plt.subplots()
     
-    # First plot (x = k)
-    ax1.plot(k, Y_scan)
-    ax1.set_xlabel("k")
-    ax1.set_ylabel("y(k)")
-    ax1.set_title("Output interpolation λ scan")
-    ax1.set_ylim([-1.5, 1.5])
+    # # First plot (x = k)
+    # ax1.plot(k, Y_scan)
+    # ax1.set_xlabel("k")
+    # ax1.set_ylabel("y(k)")
+    # ax1.set_title("Output interpolation λ scan")
+    # ax1.set_ylim([-1.5, 1.5])
     
-    # Force scientific notation on bottom axis
-    ax1.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+    # # Force scientific notation on bottom axis
+    # ax1.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
     
-    # Second plot (x = λ) on a twin axis
-    ax2 = ax1.twiny()
-    ax2.plot(lam, Y_scan, color="none")  # don't show the second line
-    # ax2.set_xlabel("λ")
+    # # Second plot (x = λ) on a twin axis
+    # ax2 = ax1.twiny()
+    # ax2.plot(lam, Y_scan, color="none")  # don't show the second line
+    # # ax2.set_xlabel("λ")
     
-    # Activate grid for both axes
-    ax1.grid(True)
-    # ax2.grid(True)
+    # # Activate grid for both axes
+    # ax1.grid(True)
+    # # ax2.grid(True)
     
-    plt.show()
+    # plt.show()
 
     
     ##########################################################################
@@ -282,10 +268,10 @@ for i in tqdm(range(len(T2))):
     # Parameters and input signal
     dt = T1/points  # sampling period
     t_scan = np.arange(len(Y_scan)) * dt
-    Y_scan = Y_scan.flatten()
+    # Y_scan = Y_scan.flatten()
     
-    #Showing the results
-    T_instant(dt,t_scan,Y_scan) #here we use 3 different methods for the period calculation
+    # #Showing the results
+    # T_instant(dt,t_scan,Y_scan) #here we use 3 different methods for the period calculation
 
 
     # x_ini=2*np.ones((N,))
@@ -322,7 +308,7 @@ ax2.set_xlabel("λ")
 ax1.legend(frameon=False, loc="upper center",  ncol=len(T2))
 ax1.margins(x=0)
 ax1.grid(True)
-
+plt.savefig(f"figures/y_lamda_scan_CCL.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 
@@ -354,6 +340,7 @@ plt.ylabel("Instantaneous Period T(k)")
 plt.margins(x=0)
 plt.grid()
 plt.legend()
+plt.savefig(f"figures/Instanteneous_Periode_CCL.png", dpi=300, bbox_inches="tight")
 plt.show()
     
     

@@ -31,21 +31,24 @@ This experiment is directly related to the notion of **"graceful degradation"**,
 
 ---
 ## Repository Structure
-- **`rrnn_utils.py`**  
+- **`utils`**
+	- **`rrnn_utils.py`**   
   Contains functions for training the reservoir, computing internal states, and calculating conceptors.  
 
 	- **`utils.py`**  
-  Provides functions for visualization and presentation of results.  
+  Provides functions for visualization and results presentation.  
 
 - **`sw_interpolation.py`**  
   Implements interpolation using a *fixed* interpolated conceptor $C_{\text{interp}}$.  
 
-- **`sw_interpolation_CCL.py`**  
-  Implements interpolation using the **Conceptor Control Loop (CCL)**, which adapts conceptors online during internal state computation.  
-- **`network_degradation.py`**
-  Implements manual degradation of the network and compares the principal components of the internal states between the intact network and the degraded network when using either a constant conceptor or the CCL. The script also visualizes the corresponding outputs for each case.
-- **`network_degradation_loop.py`**
-  Performs a qualitative evaluation of the performance of the constant conceptor and the CCL under progressive degradation, by randomly removing K neurons across multiple trials.
+- **`sw_interpolation_CCL.py`**   
+  Implements interpolation using the **Conceptor Control Loop (CCL)**.
+  
+- **`network_degradation.py`**  
+   Implements manual degradation of the network and compares the principal components of the internal states between the intact network and the degraded network when using either a constant conceptor or the CCL. 	  The script also visualizes the corresponding outputs for each case.
+  
+- **`network_degradation_loop.py`**  
+   Performs a qualitative evaluation of the performance of the constant conceptor and the CCL under progressive degradation, by randomly removing K neurons across multiple trials.
   
 ---
 
@@ -82,13 +85,23 @@ $$
 \sigma^2_{degraded}< 0.1 \cdot \sigma^2
 $$
 
+As an example, the following figure shows that when a constant conceptor is applied, the PCA of the degraded network tends to converge to a fixed point. In contrast, with the CCL, the PCA preserves part of the dynamics of the non-degraded network. In this case, the constant conceptor is considered a failure, whereas the CCL is not, according to the qualitative evaluation.
+
+<div align="center">
+
+| <img src="figures/Network degradation/PCA_3D_K80.png" alt="Qualitative Evaluation, PCA" width="350"/> |
+|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| *Figure 3. PCA comparison after removing 80 neurons from a 560-neuron ESN.* |
+
+</div>
+
 The results show that, when using either a constant conceptor or the CCL, the failure rate of the network with 10.7% of its neurons disabled (60 neurons) remains below 20%. Furthermore, with the CCL, the failure rate can be reduced to about 5% under the same level of degradation and maintained below 20% even for higher levels of degradation. These findings highlight the effectiveness of the Conceptor Control Loop in enhancing the robustness of Reservoir Computing systems.
 
 <div align="center">
 
 | <img src="figures/Network degradation/qualitative_rep70_th0.1_N560_reg1.0_a25_beta0.4_nu2.5e-05_T20_sr1.6_alpha0.75_scaling0.9_bs0.4.png" alt="Qualitative Evaluation, network degradation" width="360"/> |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| *Figure 3. Qualitative evaluation for an ESN of 560 neurons* |
+| *Figure 4. Qualitative evaluation for an ESN of 560 neurons* |
 
 </div>
 
